@@ -12,21 +12,21 @@ c = np.ones((1, 1, 1), dtype="uint8")
 
 assert c.ndim == 3 and c.sum() / c.size == 1
 
-d = np.array([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4], dtype="int16")
+d = np.arange(-5, 5)
 
 assert np.all(d == np.array([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4]))
 
-e = np.array([0., 0.25, 0.5, 0.75, 1.0], dtype="float32")
+e = np.arange(0, 1.25, 0.25)
 
 assert np.all(e == np.array([0., 0.25, 0.5, 0.75, 1.0]))
 
 f = np.arange(5 * 5).reshape(5, 5)
-fc = f[np.ix_([0, 2, 4], [1, 3])]
+fc = f[[0, 2, 4], :][:, [1, 3]]
 
 assert np.all(fc == np.array([[1, 3], [11, 13], [21, 23]]))
 
 g = np.ones((5, 3))
-gc = g.reshape(3, 5)*3
+gc = g.sum(axis=1)
 
 assert np.all(gc == np.array([3., 3., 3., 3., 3.]))
 
@@ -48,7 +48,7 @@ kl = k**l
 assert np.all(kl == np.array([1, 4, 27, 64, 625]))
 
 m = np.array([2, 2, 2, 3, 3, 3])
-mc = len(np.unique(m)) / len(m[0:4])
+mc = np.sum(m) / (len(m)*5)
 
 assert mc == 0.5
 
