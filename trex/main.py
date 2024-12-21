@@ -4,7 +4,7 @@ import numpy as np
 import pyautogui
 from mss import mss
 
-pyautogui.PAUSE = 0.005
+pyautogui.PAUSE = 0.001
 
 def process_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -24,13 +24,13 @@ def get_game_img(sct, game_x, game_y, game_width, game_height):
     return binarize(screenshot)
 
 def get_jump_delay_ratio(game_window, dz_mid):
-    min_ratio = 0.55
-    obstacle = (game_window[40:100, dz_mid:dz_mid+100] == 0).sum(axis=0)
+    min_ratio = 0.4
+    obstacle = (game_window[40:100, dz_mid:dz_mid+50] == 0).sum(axis=0)
     indices = np.where(obstacle > 0)[0]
     if not indices.size:
         return min_ratio
     obstacle_width = np.max(indices) - np.min(indices)
-    result = obstacle_width / 25
+    result = obstacle_width / 35
     if result < min_ratio:
         return min_ratio
     return result
@@ -43,13 +43,13 @@ def main():
         "height": 150 # высота
     }
 
-    danger_zone = (135, 50, 190, 110)  # x1, y1, x2, y2
+    danger_zone = (135, 40, 200, 100)  # x1, y1, x2, y2
     dz_mid = (500 + 700) // 2
 
     game_x, game_y, game_width, game_height = game_window["left"], game_window["top"], game_window["width"], game_window["height"]
 
     pressed = False
-    time.sleep(0.5)
+    time.sleep(1)
 
     with mss() as sct:
         game = get_game_img(sct, game_x, game_y, game_width, game_height)
@@ -58,7 +58,6 @@ def main():
         while True:
             game = get_game_img(sct, game_x, game_y, game_width, game_height)
             dangerous_zone = game[danger_zone[1]:danger_zone[3], danger_zone[0]:danger_zone[2]]
-            jump_delay_ratio = get_jump_delay_ratio(game, dz_mid)
 
             if not np.all(dangerous_zone):
                 if not pressed:
@@ -67,10 +66,12 @@ def main():
                         time.sleep(0.3)
                         pyautogui.keyUp("down")
                     else:
+                        jump_delay_ratio = get_jump_delay_ratio(game, dz_mid)
                         time.sleep(0.023 * jump_delay_ratio)
-                        pyautogui.press('up') 
+                        pyautogui.press('up')
                         time.sleep(0.225)
                         pyautogui.press("down")
+
                     pressed = True
             else:
                 pressed = False
