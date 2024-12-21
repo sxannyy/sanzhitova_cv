@@ -25,7 +25,7 @@ def get_game_img(sct, game_x, game_y, game_width, game_height):
 
 def get_jump_delay_ratio(game_window, dz_mid):
     min_ratio = 0.4
-    obstacle = (game_window[40:100, dz_mid:dz_mid+50] == 0).sum(axis=0)
+    obstacle = (game_window[40:100, dz_mid:dz_mid+100] == 0).sum(axis=0)
     indices = np.where(obstacle > 0)[0]
     if not indices.size:
         return min_ratio
@@ -49,7 +49,6 @@ def main():
     game_x, game_y, game_width, game_height = game_window["left"], game_window["top"], game_window["width"], game_window["height"]
 
     pressed = False
-    time.sleep(1)
 
     with mss() as sct:
         game = get_game_img(sct, game_x, game_y, game_width, game_height)
