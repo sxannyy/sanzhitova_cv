@@ -77,7 +77,7 @@ while cap.isOpened():
         player1_hand = ""
         player2_hand = ""
         game_result = ""
-        timer = 5
+        timer = 3
 
     if key == ord("q"):
         break
